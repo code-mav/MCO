@@ -109,7 +109,7 @@ document.getElementById("logoutBtn").addEventListener("click", function () {
     localStorage.removeItem("loggedInUser"); // Remove session
     alert("You have been logged out.");
 
-    updateUI(); // Update UI without refresh
+    location.reload(); // Update UI without refresh
 });
 
 // Reservation Form Handling
