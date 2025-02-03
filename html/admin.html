@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Room Reservation</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Library Reservation</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#login">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#register">Register</a></li>
+                </ul>
 
+                <!-- Profile & Logout (hidden by default) -->
+                <div id="userProfile" class="d-flex align-items-center text-white" style="display: none;">
+                    <span id="userName" class="me-3"></span>
+                    <button id="logoutBtn" class="btn btn-danger btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- View All Reservations-->
+    <section id="currentReservations" class="container form-section">
+        <h2>Current Reservations</h2>
+        <table id="reservationsTable">
+            <thead>
+                <tr>
+                    <th>Room</th>
+                    <th>Date and Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Reservation rows -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Room Booking Management-->
+    <section id="roomBooking" class="container form-section">
+        <h2>Room Booking Management</h2>
+        <form id="bookingForm">
+
+            <div class="mb-3">
+                <label for="roomSelect" class="form-label">Select Room:</label>
+                <select class="form-control" id="roomSelect" required>
+                    <option value="Room A">Room A</option>
+                    <option value="Room B">Room B</option>
+                    <option value="Room C">Room C</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="reservationTime" class="form-label">Select Time:</label>
+                <input type="datetime-local" class="form-control" id="reservationTime" required>
+            </div>
+            <button class="btn btn-primary" onclick="checkAvailability()">Check Room Availability</button>
+            <br><br>
+            <button class="btn btn-primary" onclick="confirmReservation()">Confirm Reservation</button>
+        </form>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
