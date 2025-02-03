@@ -48,3 +48,21 @@ form .btn {
 form .form-control {
     border-radius: 5px;
 }
+
+
+/* Room Reservation & Dashboard Styling */
+.form-section {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
