@@ -32,13 +32,12 @@ function updateUI() {
         document.querySelector('a[href="#login"]').style.display = "none";
         document.querySelector('a[href="#register"]').style.display = "none";
 
-        // Hide register section
+        // Hide login & register forms
+        document.getElementById("login").style.display = "none";
         document.getElementById("register").style.display = "none";
 
         // Show reservation section
         document.getElementById("roomReservation").style.display = "block";
-
-        loadUserReservations();
     } else {
         document.getElementById("userProfile").style.display = "none"; // Hide profile section
 
@@ -46,15 +45,72 @@ function updateUI() {
         document.querySelector('a[href="#login"]').style.display = "block";
         document.querySelector('a[href="#register"]').style.display = "block";
 
-        // Show register section
+        // Show login & register forms
+        document.getElementById("login").style.display = "block";
         document.getElementById("register").style.display = "block";
 
         // Hide reservation section
         document.getElementById("roomReservation").style.display = "none";
     }
 
+    loadUserReservations();
     loadGlobalReservations();
 }
+
+// Registration Form Handling
+document.getElementById("registerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("emailReg").value;
+    const password = document.getElementById("passwordReg").value;
+
+    if (name && email && password) {
+        let users = getUsers();
+
+        // Check if email already exists
+        if (users.some(user => user.email === email)) {
+            alert("This email is already registered. Please use a different email.");
+            return;
+        }
+
+        let newUser = { name, email, password };
+        saveUser(newUser);
+
+        alert(`Account successfully created for ${name}! You can now log in.`);
+        document.getElementById("registerForm").reset();
+    } else {
+        alert("Please fill out all fields.");
+    }
+});
+
+// Login Form Handling
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    let users = getUsers();
+    let user = users.find(user => user.email === email && user.password === password);
+
+    if (user) {
+        alert(`Welcome back, ${user.name}!`);
+        localStorage.setItem("loggedInUser", JSON.stringify(user)); // Store logged-in user
+        
+        updateUI(); // Update navbar & UI instantly
+    } else {
+        alert("Invalid email or password. Please try again.");
+    }
+});
+
+// Logout Functionality
+document.getElementById("logoutBtn").addEventListener("click", function () {
+    localStorage.removeItem("loggedInUser"); // Remove session
+    alert("You have been logged out.");
+
+    updateUI(); // Update UI without refresh
+});
 
 // Reservation Form Handling
 document.getElementById("reservationForm").addEventListener("submit", function (e) {
@@ -82,8 +138,7 @@ document.getElementById("reservationForm").addEventListener("submit", function (
     saveReservations(reservations);
 
     alert("Room successfully reserved!");
-    loadUserReservations();
-    loadGlobalReservations();
+    updateUI(); // Refresh UI to ensure login works
 });
 
 // Load user reservations
@@ -125,8 +180,7 @@ function deleteReservation(id) {
     let reservations = getReservations().filter(res => res.id !== id);
     saveReservations(reservations);
 
-    loadUserReservations();
-    loadGlobalReservations();
+    updateUI(); // Refresh UI after deletion
 }
 
 // Load global reservations for public dashboard
@@ -142,14 +196,6 @@ function loadGlobalReservations() {
         allReservationsList.appendChild(li);
     });
 }
-
-// Logout Functionality
-document.getElementById("logoutBtn").addEventListener("click", function () {
-    localStorage.removeItem("loggedInUser"); // Remove session
-    alert("You have been logged out.");
-
-    updateUI(); // Update UI without refresh
-});
 
 // Check login status on page load
 document.addEventListener("DOMContentLoaded", updateUI);
