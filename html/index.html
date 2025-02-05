@@ -120,8 +120,13 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="reservationTime" class="form-label">Select Time:</label>
-                <input type="datetime-local" class="form-control" id="reservationTime" required>
+                <label for="reservationDate" class="form-label">Select Date:</label>
+                <input type="date" class="form-control" id="reservationDate" required>
+                <small class="text-muted"></small>
+
+                <label for="reservationTime" class="form-label mt-2">Enter Military Time (HH:MM):</label>
+                <input type="text" class="form-control" id="reservationTime" placeholder="HH:MM" required>
+                <small class="text-muted">Time must be entered manually (e.g., 07:00, 18:00). Must be between 7 AM and 6 PM, hourly.</small>
             </div>
             <button type="submit" class="btn btn-primary">Reserve</button>
         </form>
