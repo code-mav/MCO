@@ -9,8 +9,13 @@ body {
     color: #fff; /* Adjust text color for better contrast */
 }
 
-.far {
+#navi-bar {
     font-size: 28px;
+}
+
+#profile {
+    font-size: 200px;
+    margin-bottom: 20px;
 }
 
 a#logoutBtn {
@@ -27,11 +32,17 @@ h3 {
     margin-left: 10px;
 }
 
+p{
+    color: #333;
+    vertical-align: bottom;
+    margin-left: 10px;
+}
+
 .container {
-    margin-top: 20px;
+    margin-top: 40px;
     margin-left: 40px;
     margin-right: 40px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 .navbar-brand {
@@ -160,12 +171,27 @@ th, td {
     margin-bottom: 20px;
 }
 
-.input-group-text {
-    width: 100px;
+#basic-addon1 {
+    width: 150px;
 }
 
 .form-check {
     margin-left: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+/* Admin Add Account Styles */
+.radio-group {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Admin Profile Styles */
+.text-details {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
