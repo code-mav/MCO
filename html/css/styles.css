@@ -22,12 +22,24 @@ h1, h2 {
     font-weight: bold;
 }
 
-/* Features Section */
-#features .card {
-    margin: 15px 0;
+/* Home Section */
+.home-section {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+}
+
+.full-schedule {
+    display: grid;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin-right: auto;
+    margin-bottom: 20px;
 }
 
 /* Form Sections */
@@ -87,4 +99,9 @@ table, th, td {
 }
 th, td {
     padding: 10px;
+}
+
+/* Login Styling */
+.login-btn, .register-btn {
+    margin-top: 10px;
 }
