@@ -2,15 +2,19 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
-// Registration endpoint 
+// ✅ Registration route
 router.post('/register', userController.register);
 
-// Login endpoint 
-router.post('/login', userController.login);
+// ✅ Login route (prevent conflicts)
+router.post('/auth/login', userController.login);
 
-// (Optional) CRUD endpoints
-router.get('/:id', userController.getUser);
-router.put('/:id', userController.updateUser);
-router.delete('/:id', userController.deleteUser);
+// ✅ Get user by ID
+router.get('/profile/:id', userController.getUser);
+
+// ✅ Update user by ID
+router.put('/update/:id', userController.updateUser);
+
+// ✅ Delete user by ID
+router.delete('/delete/:id', userController.deleteUser);
 
 module.exports = router;
