@@ -5,8 +5,8 @@ const userController = require('../controllers/userController');
 // ✅ Registration route
 router.post('/register', userController.register);
 
-// ✅ Login route (prevent conflicts)
-router.post('/auth/login', userController.login);
+// ✅ Fix login route (ensure it matches the form submission)
+router.post('/login', userController.login);
 
 // ✅ Get user by ID
 router.get('/profile/:id', userController.getUser);
