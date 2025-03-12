@@ -76,6 +76,7 @@ exports.add_reservations = async (req, res) => {
 
     const user = await User.findById(req.session.userId).lean();
     if (!user) return res.status(401).json({ error: "❌ Unauthorized." });
+<<<<<<< HEAD
 
     // ✅ Check if reservation already exists
     const existingReservation = await Reservation.findOne({ location, room, date, time });
@@ -83,6 +84,15 @@ exports.add_reservations = async (req, res) => {
       return res.status(400).json({ error: "❌ This time slot is already reserved." });
     }
 
+=======
+
+    // ✅ Check if reservation already exists
+    const existingReservation = await Reservation.findOne({ location, room, date, time });
+    if (existingReservation) {
+      return res.status(400).json({ error: "❌ This time slot is already reserved." });
+    }
+
+>>>>>>> 155810be57b96c379f49caf64aa1218710b63797
     // ✅ Create new reservation
     const newReservation = new Reservation({
       userId: user._id,
@@ -203,4 +213,8 @@ exports.delete_user = async (req, res) => {
     console.error("❌ Error deleting user:", error);
     return res.status(500).send('❌ Internal Server Error.');
   }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 155810be57b96c379f49caf64aa1218710b63797
