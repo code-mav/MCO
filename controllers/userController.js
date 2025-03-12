@@ -33,8 +33,8 @@ exports.view_reservations = async (req, res) => {
     const selectedDate = req.query.date ? moment(req.query.date).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
     const displayDate = moment(selectedDate).format('MMMM Do YYYY');
     const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
-    
-    // Fetch reservations for selected date
+
+    // ✅ Fetch reservations for selected date
     const reservations = await Reservation.find({ userId: user._id, date: selectedDate }).lean();
 
     res.render('user_view_res', { title: 'My Reservations', selectedDate, displayDate, user, reservations });
@@ -44,54 +44,55 @@ exports.view_reservations = async (req, res) => {
   }
 };
 
+
 // Add reservations page
 exports.add_reservations_page = async (req, res) => {
-  const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
-  res.render('user_add_res', { title: 'Add Reservation', selectedDate: null, user });
+  try {
+    const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
+    const selectedDate = req.query.date || moment().format('YYYY-MM-DD'); // ✅ Default to today
+    res.render('user_add_res', { title: 'Add Reservation', selectedDate, user });
+  } catch (error) {
+    console.error("❌ Error loading reservation page:", error);
+    res.status(500).send('❌ Internal Server Error.');
+  }
 };
 
 // Add reservations
 exports.add_reservations = async (req, res) => {
   try {
-    const selectedDate = req.body.date ? moment(req.body.date).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-    const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
-    const reservations = await Reservation.find({ date: selectedDate }).lean();
-    
-    const location = req.body.location;
-    const room = req.body.room;
-    const time = req.body.time;
+    const { location, room, time, date } = req.body;
 
-    // Check if any input fields are empty
-    if (!location || !room || !time) {
-      return res.status(400).send('❌ Please fill in all fields.');
+    if (!location || !room || !time || !date) {
+      return res.status(400).json({ error: "❌ Please fill in all fields." });
     }
 
-    // Check if reservation already exists
-    reservations.forEach(reservation => {
-      if (reservation.date === selectedDate && reservation.location === location && reservation.room === room && reservation.time === time) {
-        return res.status(400).send('❌ Reservation already exists.');
-      }
-    });
-    
+    const user = await User.findById(req.session.userId).lean();
+    if (!user) return res.status(401).json({ error: "❌ Unauthorized." });
 
-    // Create new reservation
+    // ✅ Check if reservation already exists
+    const existingReservation = await Reservation.findOne({ location, room, date, time });
+    if (existingReservation) {
+      return res.status(400).json({ error: "❌ This time slot is already reserved." });
+    }
+
+    // ✅ Create new reservation
     const newReservation = new Reservation({
       userId: user._id,
       userName: `${user.firstName} ${user.lastName}`,
       location,
       room,
-      date: selectedDate,
+      date,
       time,
     });
-    await newReservation.save();
 
-    // Redirect to user reservations page
+    await newReservation.save();
     console.log("✅ New reservation:", newReservation);
-    return res.redirect(`/user/user_view_res?date=${selectedDate}`);
-  }
-  catch (error) {
-    console.error("❌ Error fetching user:", error);
-    return res.status(500).send('❌ Internal Server Error.');
+
+    return res.json({ success: "✅ Reservation added successfully!" });
+
+  } catch (error) {
+    console.error("❌ Error adding reservation:", error);
+    return res.status(500).json({ error: "❌ Internal Server Error." });
   }
 };
 
