@@ -12,11 +12,35 @@
             <label for="datePicker"><strong>Select Date:</strong></label>
             <input type="date" id="datePicker" class="form-control" name="date" value="<%= selectedDate %>">
         </div>
-        <div class="sample-reservation">
-            <h3>Sample Reservation Slots</h3>
-            <img id="sample_sched2" src="images/sample-res.png" alt="Reservation Slots">
+        <!-- Global Reservations Section -->
+        <div class="global-reservations">
+            <h3>Current Reservations</h3>
+            <% if (reservations.length > 0) { %>
+                <table class="table table-secondary table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Room</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Reserved By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reservations.forEach(reservation => { %>
+                            <tr>
+                                <td><%= reservation.room %></td>
+                                <td><%= reservation.date %></td>
+                                <td><%= reservation.time %></td>
+                                <td><%= reservation.userName %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No active reservations at the moment.</p>
+            <% } %>
         </div>
-        <form action="/admin_edit_res" method="POST">
+        <form action="/admin/admin_edit_res/<%= reservation._id %>?_method=PUT" method="POST">
             <input type="hidden" id="selectedDate" name="date" value="<%= selectedDate %>">
             <div class="info">
                 <div class="input-group mb-3">
@@ -31,45 +55,45 @@
                     <label for="location">Location:</label>
                     <select class="form-select form-select-sm" name="location" required>
                         <option selected>Any Floor</option>
-                        <option value="1">1st Floor</option>
-                        <option value="2">2nd Floor</option>
-                        <option value="3">3rd Floor</option>
+                        <option value="1st Floor">1st Floor</option>
+                        <option value="2nd Floor">2nd Floor</option>
+                        <option value="3rd Floor">3rd Floor</option>
                     </select>
             
                     <label for="room">Room:</label>
                     <select class="form-select form-select-sm" name="room" required>
                         <option selected>Any Room</option>
-                        <option value="1A">Room 1A</option>
-                        <option value="1B">Room 1B</option>
-                        <option value="2A">Room 2A</option>
-                        <option value="2B">Room 2B</option>
+                        <option value="Room 1A">Room 1A</option>
+                        <option value="Room 1B">Room 1B</option>
+                        <option value="Room 2A">Room 2A</option>
+                        <option value="Room 2B">Room 2B</option>
+                        <option value="Room 3A">Room 3A</option>
+                        <option value="Room 3B">Room 3B</option>
                     </select>
                     <label for="time">Time:</label>
                     <select class="form-select form-select-sm" name="time" required>
                         <option selected>Any Time</option>
-                        <option selected>Any Time</option>
-                        <option value="1">07:00-08:00</option>
-                        <option value="2">08:00-09:00</option>
-                        <option value="3">09:00-10:00</option>
-                        <option value="4">10:00-11:00</option>
-                        <option value="5">11:00-12:00</option>
-                        <option value="6">12:00-13:00</option>
-                        <option value="7">13:00-14:00</option>
-                        <option value="8">14:00-15:00</option>
-                        <option value="9">15:00-16:00</option>
-                        <option value="10">16:00-17:00</option>
-                        <option value="11">17:00-18:00</option>
-                        <option value="12">18:00-19:00</option>
+                        <option value="07:00-08:00">07:00-08:00</option>
+                        <option value="08:00-09:00">08:00-09:00</option>
+                        <option value="09:00-10:00">09:00-10:00</option>
+                        <option value="10:00-11:00">10:00-11:00</option>
+                        <option value="11:00-12:00">11:00-12:00</option>
+                        <option value="12:00-13:00">12:00-13:00</option>
+                        <option value="13:00-14:00">13:00-14:00</option>
+                        <option value="14:00-15:00">14:00-15:00</option>
+                        <option value="15:00-16:00">15:00-16:00</option>
+                        <option value="16:00-17:00">16:00-17:00</option>
+                        <option value="17:00-18:00">17:00-18:00</option>
                     </select>
                 </div>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" required>
                 <label class="form-check-label" for="flexCheckChecked">
                     Yes, all information is correct.
                 </label>
             </div>
-            <a class="btn btn-outline-secondary" href="admin_view_res.html">Cancel</a>
+            <a class="btn btn-outline-secondary" href="/admin/admin_view_res">Cancel</a>
             <button type="submit" class="btn btn-success">Save  Reservation</button>
         </form>
     </section>

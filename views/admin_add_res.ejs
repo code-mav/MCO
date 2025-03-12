@@ -13,9 +13,33 @@
             <input type="date" id="datePicker" class="form-control" name="date" value="<%= selectedDate %>" required>
         </div>
 
-        <div class="sample-reservation">
-            <h3>Sample Reservation Slots</h3>
-            <img id="sample_sched2" src="/images/sample-res.png" alt="Reservation Slots">
+        <!-- Global Reservations Section -->
+        <div class="global-reservations">
+            <h3>Current Reservations</h3>
+            <% if (reservations.length > 0) { %>
+                <table class="table table-secondary table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Room</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Reserved By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reservations.forEach(reservation => { %>
+                            <tr>
+                                <td><%= reservation.room %></td>
+                                <td><%= reservation.date %></td>
+                                <td><%= reservation.time %></td>
+                                <td><%= reservation.userName %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No active reservations at the moment.</p>
+            <% } %>
         </div>
 
         <form action="/admin/admin_add_res" method="POST">
@@ -74,42 +98,6 @@
             <a class="btn btn-outline-secondary" href="/admin/admin_view_res">Back</a>
             <button type="submit" class="btn btn-success">Save New Reservation</button>
         </form>
-    </section>
-
-    <!-- Global Reservations Section -->
-    <section id="globalReservations" class="container mt-4">
-        <h3>Global Reservations</h3>
-        <hr>
-        <table class="table table-secondary table-striped table-bordered border-success-subtle">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Room</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (reservations.length > 0) { %>
-                    <% reservations.forEach((res, index) => { %>
-                        <tr>
-                            <th scope="row"><%= index + 1 %></th>
-                            <td><%= res.userName %></td>
-                            <td><%= res.location %></td>
-                            <td><%= res.room %></td>
-                            <td><%= res.date %></td>
-                            <td><%= res.time %></td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="6" class="text-center">No reservations found.</td>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
     </section>
 
     <script>

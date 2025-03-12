@@ -31,13 +31,14 @@
                             <td><%= user.email %></td>
                             <td><%= user.address %></td>
                             <td><%= userResCount[user._id] %></td>
-                            <td><%= user.isAdmin ? 'Admin' : 'User' %></td>
+                            <td><%= 'User' %></td>
                             <td>
                                 <form action="/admin/delete_user/<%= user._id %>?_method=DELETE" method="POST">
                                     <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
-                                <form action="/admin/edit_user/<%= user._id %>?_method=PUT" method="POST">
+                                <form action="/admin/edit_user/<%= user._id %>" method="GET">
                                     <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                                </form>
                             </td>
                         </tr>
                         <% total = index + 1; %>
@@ -50,13 +51,14 @@
                             <td><%= admin.email %></td>
                             <td><%= admin.address %></td>
                             <td><%= adminResCount[admin._id]  %></td>
-                            <td><%= admin.isAdmin ? 'Admin' : 'User' %></td>
+                            <td><%= 'Admin' %></td>
                             <td>
                                 <form action="/admin/delete_admin/<%= admin._id %>?_method=DELETE" method="POST">
                                     <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
-                                <form action="/admin/edit_admin/<%= admin._id %>?_method=PUT" method="POST">
+                                <form action="/admin/edit_other_admin/<%= admin._id %>" method="GET">
                                     <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                                </form>
                             </td>
                         </tr>
                     <% }) %>

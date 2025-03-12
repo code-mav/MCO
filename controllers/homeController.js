@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Admin = require('../models/Admin');
 const Reservation = require('../models/Reservation'); // Import Reservation model
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -46,13 +47,27 @@ exports.login_post = async (req, res) => {
 
         // Find user by email
         const user = await User.findOne({ email });
+        const admin = await Admin.findOne({ email });
         if (!user) {
-            return res.status(400).json({ error: "❌ Invalid email or password." });
-        }
+            if (!admin) {
+                return res.status(400).json({ error: "❌ Invalid email or password." });
+            } else {
+                // Compare password with hashed password
+                const isMatch = await bcrypt.compare(password, admin.password);
+                if (!isMatch) {
+                    return res.status(400).json({ error: "❌ Invalid email or password." });
+                }
 
-        // Compare password with hashed password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
+                // Store admin ID in session
+                req.session.adminId = admin._id;
+
+                console.log("✅ Admin logged in:", admin);
+                return res.json({ success: "✅ Login successful!", redirect: "/admin"});
+            }
+        } else {
+            // Compare password with hashed password
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
             return res.status(400).json({ error: "❌ Invalid email or password." });
         }
 
@@ -60,7 +75,8 @@ exports.login_post = async (req, res) => {
         req.session.userId = user._id;
 
         console.log("✅ User logged in:", user);
-        return res.json({ success: "✅ Login successful!", redirect: "/user" });
+        return res.json({ success: "✅ Login successful!", redirect: "/user"});
+        }
 
     } catch (error) {
         console.error("❌ Login error:", error);
