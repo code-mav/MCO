@@ -28,11 +28,11 @@
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Password</span>
-                    <input type="password" class="form-control" name="password" placeholder="Leave blank if not changing">
+                    <input type="password" class="form-control" name="password" required>
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Confirm Password</span>
-                    <input type="password" class="form-control" name="confirmPassword" placeholder="Leave blank if not changing">
+                    <input type="password" class="form-control" name="confirmPassword" required>
                 </div>
                 <div class="radio-group">
                     <span class="align-middle">User Type:</span>
@@ -58,7 +58,7 @@
             </div>
             <div class="mb-3">
                 <a class="btn btn-outline-secondary" href="/admin/admin_manage_acc">Back</a>
-                <a class="btn btn-outline-success" href="/admin/add_user">Save New Account</a>
+                <button type="submit" class="btn btn-success">Save New Account</button>
             </div>
         </form>
     </section>

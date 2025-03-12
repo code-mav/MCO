@@ -19,11 +19,6 @@
         <!-- Display Selected Date -->
         <h3>Selected Date: <span id="displayDate"><%= displayDate %></span></h3>
 
-        <div class="full-schedule">
-            <h3>Sample Schedule</h3>
-            <img id="sample_sched2" src="/images/sample_schedule.jpg" alt="Schedule" width="500" height="500">
-        </div>
-
         <table class="table table-secondary table-striped table-bordered border-success-subtle" id="reservationsTable">
             <thead>
                 <tr>
@@ -47,6 +42,9 @@
                             <td>
                                 <form action="/admin/delete_reservation/<%= res._id %>?_method=DELETE" method="POST">
                                     <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                                <form action="/admin/admin_edit_res/<%= res._id %>" method="GET">
+                                    <button type="submit" class="btn btn-warning btn-sm">Edit</button>
                                 </form>
                             </td>
                         </tr>
