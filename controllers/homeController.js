@@ -106,8 +106,4 @@ exports.register_post = async (req, res) => {
         console.error("❌ Registration error:", error);
         return res.status(500).json({ error: "❌ Internal Server Error." });
     }
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 155810be57b96c379f49caf64aa1218710b63797
