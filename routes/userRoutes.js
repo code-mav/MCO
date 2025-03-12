@@ -1,12 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const Reservation = require('../models/Reservation'); 
 
 // User page
 router.get('/', userController.user_index);
 
 // User logout
 router.get('/logout', userController.logout);
+
+// API to get unavailable times for a given date and room
+router.get('/api/unavailable-times', async (req, res) => {
+    const { date, room } = req.query;
+    
+    try {
+        const reservations = await Reservation.find({ date, room }).lean();
+        const unavailableTimes = reservations.map(res => res.time);
+        res.json(unavailableTimes);
+    } catch (error) {
+        console.error("Error fetching unavailable times:", error);
+        res.status(500).json([]);
+    }
+});
 
 // View reservations
 router.get('/user_view_res', userController.view_reservations);

@@ -16,20 +16,20 @@
         </div>
 
         <!-- Reservation Form -->
-        <form action="/user/user_add_res" method="POST">
+        <form id="reservationForm">
             <input type="hidden" id="selectedDate" name="date" value="<%= selectedDate %>">
 
             <div class="info">
                 <div class="selects">
                     <label for="location">Location:</label>
-                    <select class="form-select form-select-sm" name="location" required>
+                    <select class="form-select form-select-sm" id="locationSelect" name="location" required>
                         <option value="1st Floor">1st Floor</option>
                         <option value="2nd Floor">2nd Floor</option>
                         <option value="3rd Floor">3rd Floor</option>
                     </select>
 
                     <label for="room">Room:</label>
-                    <select class="form-select form-select-sm" name="room" required>
+                    <select class="form-select form-select-sm" id="roomSelect" name="room" required>
                         <option value="Room 1A">Room 1A</option>
                         <option value="Room 1B">Room 1B</option>
                         <option value="Room 2A">Room 2A</option>
@@ -39,7 +39,7 @@
                     </select>
 
                     <label for="time">Time:</label>
-                    <select class="form-select form-select-sm" name="time" required>
+                    <select class="form-select form-select-sm" id="timeSelect" name="time" required>
                         <option value="07:00-08:00">07:00-08:00</option>
                         <option value="08:00-09:00">08:00-09:00</option>
                         <option value="09:00-10:00">09:00-10:00</option>
@@ -67,10 +67,101 @@
         </form>
     </section>
 
+    <!-- Global Reservations Section -->
+    <section id="globalReservations" class="container mt-4">
+        <h3>Global Reservations</h3>
+        <hr>
+        <table class="table table-secondary table-striped table-bordered border-success-subtle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Room</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (reservations.length > 0) { %>
+                    <% reservations.forEach((res, index) => { %>
+                        <tr>
+                            <th scope="row"><%= index + 1 %></th>
+                            <td><%= res.userName %></td>
+                            <td><%= res.location %></td>
+                            <td><%= res.room %></td>
+                            <td><%= res.date %></td>
+                            <td><%= res.time %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="text-center">No reservations found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </section>
+
     <script>
+        // Prevent past date selection
+        document.getElementById("datePicker").setAttribute("min", new Date().toISOString().split("T")[0]);
+
         document.getElementById("datePicker").addEventListener("change", function () {
             document.getElementById("selectedDate").value = this.value;
+            fetchUnavailableTimes();
         });
+
+        document.getElementById("roomSelect").addEventListener("change", fetchUnavailableTimes);
+
+        async function fetchUnavailableTimes() {
+            const date = document.getElementById("datePicker").value;
+            const room = document.getElementById("roomSelect").value;
+            if (!date || !room) return;
+
+            try {
+                const response = await fetch(`/api/unavailable-times?date=${date}&room=${room}`);
+                const unavailableTimes = await response.json();
+
+                const timeSelect = document.getElementById("timeSelect");
+                [...timeSelect.options].forEach(option => {
+                    option.disabled = unavailableTimes.includes(option.value);
+                });
+            } catch (error) {
+                console.error("Error fetching unavailable times:", error);
+            }
+        }
+
+        // AJAX submission for reservations (prevents page reload)
+        document.getElementById("reservationForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch("/user/user_add_res", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(result.success); // Show success message
+                    window.location.href = `/user/user_view_res?date=${data.date}`; // Redirect to view reservations
+                } else {
+                    alert(result.error); // Show error message
+                }
+
+            } catch (error) {
+                console.error("❌ Error submitting reservation:", error);
+                alert("❌ Something went wrong. Please try again.");
+            }
+        });
+
+        fetchUnavailableTimes();
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

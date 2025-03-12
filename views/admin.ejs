@@ -11,17 +11,45 @@
         <hr>
         <div class="admin-container">
             <div class="admin-buttons">
-                <a id="viewReservationsBtn" class="btn btn-outline-success" href="admin_view_res.html">
+                <a id="viewReservationsBtn" class="btn btn-outline-success" href="/admin/admin_view_res">
                     View Reservations &nbsp; <i class="arrow right"></i>
                 </a>
-                <a id="manageAccsBtn" class="btn btn-outline-success" href="admin_manage_acc.html">
+                <a id="manageAccsBtn" class="btn btn-outline-success" href="/admin/admin_manage_acc">
                     Manage User Accounts &nbsp; <i class="arrow right"></i>
                 </a>
             </div>
             <div class="divider"></div>
+            <!-- 📌 Global Reservations Table -->
             <div class="full-schedule">
-                <h3>Sample Schedule</h3>
-                <img id="sample_sched" src="images/sample_schedule.jpg" alt="Schedule" width="500" height="500">
+                <h3>Global Reservations</h3>
+                <% if (reservations.length > 0) { %>
+                    <table class="table table-secondary table-striped table-bordered border-success-subtle">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Room</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% reservations.forEach((res, index) => { %>
+                                <tr>
+                                    <th scope="row"><%= index + 1 %></th>
+                                    <td><%= res.userName %></td>
+                                    <td><%= res.location %></td>
+                                    <td><%= res.room %></td>
+                                    <td><%= res.date %></td>
+                                    <td><%= res.time %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <p class="text-center">No reservations at the moment.</p>
+                <% } %>
             </div>
 
         </div>
@@ -29,6 +57,5 @@
     
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js"></script>
 </body>
 </html>

@@ -14,9 +14,34 @@
     <section id="viewReservation" class="container home-section">
         <h1>Home Page</h1>
         <hr>
-        <div class="full-schedule text-center">
-            <h3>Sample Schedule</h3>
-            <img id="sample_sched" src="/images/sample_schedule.jpg" alt="Schedule" width="500" height="500">
+
+        <!-- Global Reservations Section -->
+        <div class="global-reservations">
+            <h3>Current Reservations</h3>
+            <% if (reservations.length > 0) { %>
+                <table class="table table-secondary table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Room</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Reserved By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reservations.forEach(reservation => { %>
+                            <tr>
+                                <td><%= reservation.room %></td>
+                                <td><%= reservation.date %></td>
+                                <td><%= reservation.time %></td>
+                                <td><%= reservation.userName %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No active reservations at the moment.</p>
+            <% } %>
         </div>
 
         <% if (!user) { %>
