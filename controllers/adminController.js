@@ -9,7 +9,8 @@ const saltRounds = 10;
 exports.admin_index = async (req, res) => {
    try {
       const admin = req.session.adminId ? await Admin.findById(req.session.adminId).lean() : null;
-      res.render('admin', { title: 'Admin Home Page', admin });
+      const reservations = await Reservation.find().sort({ date: 1, time: 1 }).lean();
+      res.render('admin', { title: 'Admin Home Page', admin, reservations });
     } catch (error) {
       console.error("❌ Error fetching admin:", error);
       res.status(500).json({ message: '❌ Internal Server Error.' });
@@ -196,6 +197,8 @@ exports.add_user = async (req, res) => {
     const { firstName, lastName, email, address, password, admin, user } = req.body;
     const updatedAdmin = {};
     const updatedUser = {};
+
+    console.log(admin, user);
 
     if (admin) {
       if (firstname) updatedAdmin.firstName = firstName;
