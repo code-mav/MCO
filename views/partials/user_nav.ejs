@@ -1,0 +1,30 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Library Reservation</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <% if (user) { %>
+          <div id="userProfile" class="d-flex align-items-center text-white">
+            <li class="nav-item dropdown list-unstyled">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="far fa-user-circle" id="navi-bar"></i>&nbsp;&nbsp;<%= user.firstName %>, <%= user.lastName %>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/user/profile/<%= user._id %>">Check Profile</a></li>
+                <li><a class="dropdown-item" href="/user/edit/<%= user._id %>">Edit Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/user/logout" id="logoutBtn">Logout</a></li>
+              </ul>
+            </li>
+          </div>
+        <% } else { %>
+          <div id="userProfile" class="d-flex align-items-center text-white">
+            <a class="nav-link" href="/login">Login</a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+</nav>

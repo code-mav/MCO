@@ -1,38 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add a Reservation</title>
-    <link rel="stylesheet" href="/css/user_style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/e670541006.js" crossorigin="anonymous"></script>
-</head>
+    <%- include("./partials/user_head.ejs") %>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Library Reservation</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <div id="userProfile" class="d-flex align-items-center text-white">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class='far fa-user-circle' id="navi-bar"></i>&nbsp;&nbsp;<%= user.firstName %> <%= user.lastName %>
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="/user_check_profile">Check Profile</a></li>
-                          <li><a class="dropdown-item" href="/user_edit_acc">Edit Profile</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/logout" id="logoutBtn">Logout</a></li>
-                        </ul>
-                    </li>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <%- include("./partials/user_nav.ejs") %>
 
     <!-- User Add Reservation Section -->
     <section id="addReservation" class="container user-section">
@@ -42,11 +12,11 @@
         <!-- Date Picker -->
         <div class="add-res-date">
             <label for="datePicker"><strong>Select Date:</strong></label>
-            <input type="date" id="datePicker" class="form-control" name="date" value="<%= selectedDate %>">
+            <input type="date" id="datePicker" class="form-control" name="date" value="<%= selectedDate %>" required>
         </div>
 
         <!-- Reservation Form -->
-        <form action="/user_add_res" method="POST">
+        <form action="/user/user_add_res" method="POST">
             <input type="hidden" id="selectedDate" name="date" value="<%= selectedDate %>">
 
             <div class="info">
@@ -64,6 +34,8 @@
                         <option value="Room 1B">Room 1B</option>
                         <option value="Room 2A">Room 2A</option>
                         <option value="Room 2B">Room 2B</option>
+                        <option value="Room 3A">Room 3A</option>
+                        <option value="Room 3B">Room 3B</option>
                     </select>
 
                     <label for="time">Time:</label>
@@ -84,14 +56,14 @@
             </div>
 
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="confirmCheck" required>
+                <input class="form-check-input" type="checkbox" value="" id="confirmCheck" name="confirm" required>
                 <label class="form-check-label" for="confirmCheck">
                     Yes, all information is correct.
                 </label>
             </div>
 
             <button type="submit" class="btn btn-success">Save Reservation</button>
-            <a class="btn btn-outline-secondary" href="/user_view_res">Back</a>
+            <a class="btn btn-outline-secondary" href="/user/user_view_res">Back</a>
         </form>
     </section>
 

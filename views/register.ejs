@@ -1,41 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Room Reservation - Register</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+    <%- include("./partials/home_head.ejs") %>
 <body>
-    <!-- Navbar (same design as register.html, but with dynamic links) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Library Reservation</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-                <% if (user) { %>
-                    <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" href="/user">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-                    </ul>
-                <% } else { %>
-                    <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                    </ul>
-                <% } %>
-            </div>
-        </div>
-    </nav>
+    <%- include("./partials/home_nav.ejs") %>
 
     <!-- Registration Section -->
     <section id="register" class="container form-section mt-4">
         <h2>Register</h2>
         <hr>
-        <form id="registerForm" action="/api/users/register" method="POST">
+        <form id="registerForm" action="/register" method="POST">
             <div class="mb-3">
                 <label for="firstName" class="form-label">First Name:</label>
                 <input type="text" class="form-control" id="firstName" name="firstName" required>

@@ -2,19 +2,34 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
-// ✅ Registration route
-router.post('/register', userController.register);
+// User page
+router.get('/', userController.user_index);
 
-// ✅ Fix login route (ensure it matches the form submission)
-router.post('/login', userController.login);
+// User logout
+router.get('/logout', userController.logout);
 
-// ✅ Get user by ID
-router.get('/profile/:id', userController.getUser);
+// View reservations
+router.get('/user_view_res', userController.view_reservations);
 
-// ✅ Update user by ID
-router.put('/update/:id', userController.updateUser);
+// Add reservation page
+router.get('/user_add_res', userController.add_reservations_page);
 
-// ✅ Delete user by ID
-router.delete('/delete/:id', userController.deleteUser);
+// Add reservation
+router.post('/user_add_res', userController.add_reservations);
+
+// Delete reservation
+router.delete('/delete_reservation/:id', userController.delete_reservation);
+
+// Get user
+router.get('/profile/:id', userController.get_user);
+
+// Edit user
+router.get('/edit/:id', userController.edit_user);
+
+// Update user
+router.put('/edit/:id', userController.update_user);
+
+// Delete user
+router.delete('/edit/:id', userController.delete_user);
 
 module.exports = router;

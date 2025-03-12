@@ -1,104 +1,142 @@
 const User = require('../models/User');
+const Reservation = require('../models/Reservation');
 const bcrypt = require('bcrypt');
+const moment = require('moment/moment');
 const saltRounds = 10;
 
-// 📌 Register a new user
-exports.register = async (req, res) => {
-  try {
-    const { firstName, lastName, email, address, password, confirmPassword } = req.body;
-
-    // ✅ Check if all required fields are provided
-    if (!firstName || !lastName || !email || !address || !password || !confirmPassword) {
-      return res.status(400).send('❌ Please fill in all fields.');
+// User page
+exports.user_index = async (req, res) => {
+   try {
+      const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
+      res.render('user', { title: 'User Home Page', user });
+    } catch (error) {
+      console.error("❌ Error fetching user:", error);
+      res.status(500).json({ message: '❌ Internal Server Error.' });
     }
-
-    // ✅ Ensure passwords match
-    if (password !== confirmPassword) {
-      return res.status(400).send('❌ Passwords do not match.');
-    }
-
-    // ✅ Check if email already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).send('❌ User already exists.');
-    }
-
-    // ✅ Hash password before saving to database
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // ✅ Create new user
-    const newUser = new User({ firstName, lastName, email, address, password: hashedPassword });
-    await newUser.save();
-
-    // ✅ Store user ID in session
-    req.session.userId = newUser._id;
-
-    console.log("✅ User registered successfully:", newUser);
-    return res.redirect('/user');  // Redirect to user dashboard
-  } catch (error) {
-    console.error("❌ Registration error:", error);
-    return res.status(500).send('❌ Internal Server Error.');
-  }
 };
 
-// 📌 Login user
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // ✅ Ensure email & password are provided
-    if (!email || !password) {
-      return res.status(400).send('❌ Please enter both email and password.');
-    }
-
-    // ✅ Find user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).send('❌ Invalid email or password.');
-    }
-
-    // ✅ Compare password with hashed password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).send('❌ Invalid email or password.');
-    }
-
-    // ✅ Store user ID in session
-    req.session.userId = user._id;
-
-    console.log("✅ User logged in:", user);
-    return res.redirect('/user');  // Redirect to user dashboard
-  } catch (error) {
-    console.error("❌ Login error:", error);
-    return res.status(500).send('❌ Internal Server Error.');
-  }
-};
-
-// 📌 Logout user
+// User logout
 exports.logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      console.error("❌ Logout error:", err);
-      return res.status(500).send('❌ Internal Server Error.');
+        console.error("❌ Error destroying session:", err);
+        return res.status(500).send('❌ Internal Server Error.');
     }
-    res.redirect('/login');  // Redirect to login page after logout
+    console.log("✅ Session destroyed successfully.");
+    res.redirect('/');
   });
 };
 
-// 📌 Get user by ID
-exports.getUser = async (req, res) => {
+// View user reservations
+exports.view_reservations = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: '❌ User not found.' });
-    res.status(200).json(user);
+    const selectedDate = req.query.date ? moment(req.query.date).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+    const displayDate = moment(selectedDate).format('MMMM Do YYYY');
+    const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
+    
+    // Fetch reservations for selected date
+    const reservations = await Reservation.find({ userId: user._id, date: selectedDate }).lean();
+
+    res.render('user_view_res', { title: 'My Reservations', selectedDate, displayDate, user, reservations });
+  } catch (error) {
+    console.error("❌ Error fetching reservations:", error);
+    res.status(500).send('❌ Internal Server Error.');
+  }
+};
+
+// Add reservations page
+exports.add_reservations_page = async (req, res) => {
+  const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
+  res.render('user_add_res', { title: 'Add Reservation', selectedDate: null, user });
+};
+
+// Add reservations
+exports.add_reservations = async (req, res) => {
+  try {
+    const selectedDate = req.body.date ? moment(req.body.date).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+    const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
+    const reservations = await Reservation.find({ date: selectedDate }).lean();
+    
+    const location = req.body.location;
+    const room = req.body.room;
+    const time = req.body.time;
+
+    // Check if any input fields are empty
+    if (!location || !room || !time) {
+      return res.status(400).send('❌ Please fill in all fields.');
+    }
+
+    // Check if reservation already exists
+    reservations.forEach(reservation => {
+      if (reservation.date === selectedDate && reservation.location === location && reservation.room === room && reservation.time === time) {
+        return res.status(400).send('❌ Reservation already exists.');
+      }
+    });
+    
+
+    // Create new reservation
+    const newReservation = new Reservation({
+      userId: user._id,
+      userName: `${user.firstName} ${user.lastName}`,
+      location,
+      room,
+      date: selectedDate,
+      time,
+    });
+    await newReservation.save();
+
+    // Redirect to user reservations page
+    console.log("✅ New reservation:", newReservation);
+    return res.redirect(`/user/user_view_res?date=${selectedDate}`);
+  }
+  catch (error) {
+    console.error("❌ Error fetching user:", error);
+    return res.status(500).send('❌ Internal Server Error.');
+  }
+};
+
+// Delete reservation
+exports.delete_reservation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedReservation = await Reservation.findByIdAndDelete(id);
+
+    if (!deletedReservation) {
+      return res.status(404).send('❌ Reservation not found.');
+    }
+
+    console.log("✅ Reservation deleted successfully.");
+    res.redirect('/user/user_view_res');
+  } catch (error) {
+    console.error("❌ Error deleting reservation:", error);
+    return res.status(500).send('❌ Internal Server Error.');
+  }
+}
+
+// Get user
+exports.get_user = async (req, res) => {
+  try {
+    const user = req.session.userId ? await User.findById(req.session.userId) : null;
+    res.render('user_check_profile', { title: 'User Profile', user });
   } catch (error) {
     console.error("❌ Error fetching user:", error);
     res.status(500).json({ message: '❌ Internal Server Error.' });
   }
 };
 
-// 📌 Update user profile
-exports.updateUser = async (req, res) => {
+// Edit user profile
+exports.edit_user = async (req, res) => {
+  try {
+    const user = req.session.userId ? await User.findById(req.session.userId).lean() : null;
+    res.render('user_edit_acc', { title: 'Edit Profile', user });
+  } catch (error) {
+    console.error("❌ Error fetching user:", error);
+    res.status(500).send('❌ Internal Server Error.');
+  }
+};
+
+// Update user profile
+exports.update_user = async (req, res) => {
   try {
     const { firstName, lastName, email, address, password } = req.body;
     const updatedUser = {};
@@ -121,15 +159,15 @@ exports.updateUser = async (req, res) => {
 
     // ✅ Update session data
     req.session.user = user; 
-    res.redirect('/user_edit_acc');  // Redirect after update
+    res.redirect(`/user/profile/${user._id}`);  // Redirect after update
   } catch (error) {
     console.error("❌ Error updating user:", error);
     res.status(500).send("❌ Internal Server Error.");
   }
 };
 
-// 📌 Delete user
-exports.deleteUser = async (req, res) => {
+// Delete user
+exports.delete_user = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedUser = await User.findByIdAndDelete(id);
@@ -138,16 +176,23 @@ exports.deleteUser = async (req, res) => {
       return res.status(404).send('❌ User not found.');
     }
 
+    // Delete all reservations associated with the user
+    await Reservation.deleteMany({ userId: id });
+
     // ✅ Destroy session on user deletion
     req.session.destroy((err) => {
-      if (err) console.error("❌ Session destroy error:", err);
-      res.status(500).send('❌ Internal Server Error.');
+      if (err) {
+        console.error("❌ Session destroy error:", err);
+        return res.status(500).send('❌ Internal Server Error.');
+      }
+
+      console.log("✅ User deleted successfully.");
+      res.redirect('/');
     });
 
-    console.log("✅ User deleted successfully.");
-    res.redirect('/');
   } catch (error) {
     console.error("❌ Error deleting user:", error);
     return res.status(500).send('❌ Internal Server Error.');
   }
 };
+
