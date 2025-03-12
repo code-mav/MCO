@@ -12,12 +12,12 @@
         <!-- Date Picker -->
         <div class="add-res-date">
             <label for="datePicker"><strong>Select Date:</strong></label>
-            <input type="date" id="datePicker" class="form-control" name="date" value="<%= selectedDate || moment().format('YYYY-MM-DD') %>" required min="">
+            <input type="date" id="datePicker" class="form-control" name="date" value="<%= selectedDate %>" required>
         </div>
 
         <!-- Reservation Form -->
         <form id="reservationForm">
-            <input type="hidden" id="selectedDate" name="date" value="<%= selectedDate || moment().format('YYYY-MM-DD') %>">
+            <input type="hidden" id="selectedDate" name="date" value="<%= selectedDate %>">
 
             <div class="info">
                 <div class="selects">
@@ -65,6 +65,42 @@
             <button type="submit" class="btn btn-success">Save Reservation</button>
             <a class="btn btn-outline-secondary" href="/user/user_view_res">Back</a>
         </form>
+    </section>
+
+    <!-- Global Reservations Section -->
+    <section id="globalReservations" class="container mt-4">
+        <h3>Global Reservations</h3>
+        <hr>
+        <table class="table table-secondary table-striped table-bordered border-success-subtle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Room</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (reservations.length > 0) { %>
+                    <% reservations.forEach((res, index) => { %>
+                        <tr>
+                            <th scope="row"><%= index + 1 %></th>
+                            <td><%= res.userName %></td>
+                            <td><%= res.location %></td>
+                            <td><%= res.room %></td>
+                            <td><%= res.date %></td>
+                            <td><%= res.time %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="text-center">No reservations found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
     </section>
 
     <script>
