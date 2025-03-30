@@ -29,7 +29,11 @@
                     </thead>
                     <tbody>
                         <% reservations.forEach(reservation => { %>
-                            <tr>
+                            <% 
+                                const today = new Date().toISOString().split('T')[0];
+                                const isPast = reservation.date < today; // Check if it's in the past
+                            %>
+                            <tr class="<%= isPast ? 'greyed-out' : '' %>">
                                 <td><%= reservation.room %></td>
                                 <td><%= reservation.date %></td>
                                 <td><%= reservation.time %></td>
