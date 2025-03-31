@@ -107,26 +107,6 @@
 
         document.getElementById("datePicker").addEventListener("change", function () {
             document.getElementById("selectedDate").value = this.value;
-            const selectedDate = this.value;
-            const timeSelect = document.getElementById("timeSelect");
-            const now = new Date();
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
-
-            Array.from(timeSelect.options).forEach(option => {
-                option.hidden = false;
-            });
-
-            if (selectedDate === now.toISOString().split("T")[0]) {
-                Array.from(timeSelect.options).forEach(option => {
-                    const timeRange = option.value.split("-")[0];
-                    const [hour, minute] = timeRange.split(":").map(Number);
-
-                    if (hour < currentHour || (hour === currentHour && minute < currentMinute)) {
-                        option.hidden = true;
-                    }
-                });
-            }   
             fetchUnavailableTimes();
         });
 
@@ -178,6 +158,44 @@
                 alert("❌ Something went wrong. Please try again.");
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const datePicker = document.getElementById("datePicker");
+            const timeSelect = document.getElementById("timeSelect");
+
+            datePicker.setAttribute("min", new Date().toISOString().split("T")[0]);
+
+            function updateTimeOptions() {
+                const selectedDate = datePicker.value;
+                const now = new Date();
+                const currentHour = now.getHours();
+                const currentMinute = now.getMinutes();
+
+                // Enable all time slots first (in case they were hidden before)
+                Array.from(timeSelect.options).forEach(option => {
+                    option.hidden = false;
+                });
+
+                if (selectedDate === now.toISOString().split("T")[0]) {
+                    // Hide past time slots if selected date is today
+                    Array.from(timeSelect.options).forEach(option => {
+                        const timeRange = option.value.split("-")[0]; // Get start time
+                        const [hour, minute] = timeRange.split(":").map(Number);
+
+                        if (hour < currentHour || (hour === currentHour && minute < currentMinute)) {
+                            option.hidden = true;
+                        }
+                    });
+                }
+            }
+
+            // Run once on page load if date is given
+            updateTimeOptions();
+
+            // Run on date change
+            datePicker.addEventListener("change", updateTimeOptions);
+        });
+
 
         fetchUnavailableTimes();
     </script>
