@@ -54,8 +54,8 @@ exports.login_post = async (req, res) => {
         // Find user by email
         const user = await User.findOne({ email });
         const admin = await Admin.findOne({ email });
-        if (!user) {
-            if (!admin) {
+        if (user === null) {
+            if (admin === null) {
                 return res.status(400).json({ error: "❌ Invalid email or password." });
             } else {
                 // Compare password with hashed password
