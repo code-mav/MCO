@@ -23,16 +23,22 @@
                             <th>Room</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th>Reserved By</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% reservations.forEach(reservation => { %>
-                            <tr>
+                            <% 
+                                const now = new Date();
+                                const [startHour, startMinute] = reservation.time.split('-')[0].trim().split(':').map(Number); 
+                                const reservationDateTime = new Date(reservation.date);
+                                reservationDateTime.setHours(startHour, startMinute);
+
+                                const isPast = reservationDateTime < now;
+                            %>
+                            <tr class="<%= isPast ? 'greyed-out' : '' %>">
                                 <td><%= reservation.room %></td>
                                 <td><%= reservation.date %></td>
                                 <td><%= reservation.time %></td>
-                                <td><%= reservation.userName %></td>
                             </tr>
                         <% }) %>
                     </tbody>
@@ -56,7 +62,6 @@
                 <div class="selects">
                     <label for="location">Location:</label>
                     <select class="form-select form-select-sm" id="locationSelect" name="location" required>
-                        <option selected>Any Floor</option>
                         <option value="1st Floor">1st Floor</option>
                         <option value="2nd Floor">2nd Floor</option>
                         <option value="3rd Floor">3rd Floor</option>
@@ -64,7 +69,6 @@
             
                     <label for="room">Room:</label>
                     <select class="form-select form-select-sm" id="roomSelect" name="room" required>
-                        <option selected>Any Room</option>
                         <option value="Room 1A">Room 1A</option>
                         <option value="Room 1B">Room 1B</option>
                         <option value="Room 2A">Room 2A</option>
@@ -74,7 +78,6 @@
                     </select>
                     <label for="time">Time:</label>
                     <select class="form-select form-select-sm" id="timeSelect" name="time" required>
-                        <option selected>Any Time</option>
                         <option value="07:00-08:00">07:00-08:00</option>
                         <option value="08:00-09:00">08:00-09:00</option>
                         <option value="09:00-10:00">09:00-10:00</option>

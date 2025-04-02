@@ -101,7 +101,15 @@ th, td {
     padding: 10px;
 }
 
+.greyed-out {
+    background-color: #d3d3d3; /* Light gray */
+    color: #808080; /* Dark gray text */
+    pointer-events: none; /* Optional: disable interactions */
+    opacity: 0.6; /* Reduce visibility */
+}
+
 /* Login Styling */
 .login-btn, .register-btn {
     margin-top: 10px;
 }
+

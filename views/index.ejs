@@ -16,31 +16,39 @@
         <hr>
 
         <!-- Global Reservations Section -->
-    <div class="global-reservations">
-        <h3>Current Reservations</h3>
-        <% if (reservations.length > 0) { %>
-            <table class="table table-secondary table-striped table-bordered">
-                <thead>
-                 <tr>
-                     <th>Room</th>
-                     <th>Date</th>
-                     <th>Time</th>
-                   </tr>
-                </thead>
-                <tbody>
-                    <% reservations.forEach(reservation => { %>
+        <div class="global-reservations">
+            <h3>Current Reservations</h3>
+            <% if (reservations.length > 0) { %>
+                <table class="table table-secondary table-striped table-bordered">
+                    <thead>
                         <tr>
-                            <td><%= reservation.room %></td>
-                            <td><%= reservation.date %></td>
-                            <td><%= reservation.time %></td>
+                            <th>Room</th>
+                            <th>Date</th>
+                            <th>Time</th>
                         </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        <% } else { %>
-            <p>No active reservations at the moment.</p>
-        <% } %>
-    </div>
+                    </thead>
+                    <tbody>
+                        <% reservations.forEach(reservation => { %>
+                            <% 
+                                const now = new Date();
+                                const [startHour, startMinute] = reservation.time.split('-')[0].trim().split(':').map(Number); 
+                                const reservationDateTime = new Date(reservation.date);
+                                reservationDateTime.setHours(startHour, startMinute);
+
+                                const isPast = reservationDateTime < now;
+                            %>
+                            <tr class="<%= isPast ? 'greyed-out' : '' %>">
+                                <td><%= reservation.room %></td>
+                                <td><%= reservation.date %></td>
+                                <td><%= reservation.time %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No active reservations at the moment.</p>
+            <% } %>
+        </div>
 
         <% if (!user && !admin) { %>
         <div class="log-reg-prompt text-center mt-4">

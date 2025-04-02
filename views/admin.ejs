@@ -19,36 +19,38 @@
                 </a>
             </div>
             <div class="divider"></div>
-            <!-- 📌 Global Reservations Table -->
-            <div class="full-schedule">
-                <h3>Global Reservations</h3>
+            <!-- Global Reservations Section -->
+            <div class="global-reservations">
+                <h3>Current Reservations</h3>
                 <% if (reservations.length > 0) { %>
-                    <table class="table table-secondary table-striped table-bordered border-success-subtle">
+                    <table class="table table-secondary table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Location</th>
                                 <th>Room</th>
                                 <th>Date</th>
                                 <th>Time</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <% reservations.forEach((res, index) => { %>
-                                <tr>
-                                    <th scope="row"><%= index + 1 %></th>
-                                    <td><%= res.userName %></td>
-                                    <td><%= res.location %></td>
-                                    <td><%= res.room %></td>
-                                    <td><%= res.date %></td>
-                                    <td><%= res.time %></td>
+                            <% reservations.forEach(reservation => { %>
+                                <% 
+                                    const now = new Date();
+                                    const [startHour, startMinute] = reservation.time.split('-')[0].trim().split(':').map(Number); 
+                                    const reservationDateTime = new Date(reservation.date);
+                                    reservationDateTime.setHours(startHour, startMinute);
+
+                                    const isPast = reservationDateTime < now;
+                                %>
+                                <tr class="<%= isPast ? 'greyed-out' : '' %>">
+                                    <td><%= reservation.room %></td>
+                                    <td><%= reservation.date %></td>
+                                    <td><%= reservation.time %></td>
                                 </tr>
                             <% }) %>
                         </tbody>
                     </table>
                 <% } else { %>
-                    <p class="text-center">No reservations at the moment.</p>
+                    <p>No active reservations at the moment.</p>
                 <% } %>
             </div>
 

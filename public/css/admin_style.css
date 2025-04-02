@@ -113,6 +113,13 @@ p{
     margin-bottom: 20px;
 }
 
+.greyed-out {
+    background-color: #d3d3d3; /* Light gray */
+    color: #808080; /* Dark gray text */
+    pointer-events: none; /* Optional: disable interactions */
+    opacity: 0.6; /* Reduce visibility */
+}
+
 /* Admin View Reservation Styles */
 .filters, .table-actions{
     display: flex;
