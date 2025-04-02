@@ -37,11 +37,13 @@
 
                                 const isPast = reservationDateTime < now;
                             %>
-                            <tr class="<%= isPast ? 'greyed-out' : '' %>">
+                            <% if (!isPast) { %>
+                            <tr>
                                 <td><%= reservation.room %></td>
                                 <td><%= reservation.date %></td>
                                 <td><%= reservation.time %></td>
                             </tr>
+                            <% } %>
                         <% }) %>
                     </tbody>
                 </table>

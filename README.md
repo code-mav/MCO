@@ -44,3 +44,58 @@ nodemon app.js
 ```
 The application will be available at:
 🔗 http://localhost:3000/
+
+
+## ✨ Features
+
+### 👉 Login & Register System
+Provides authentication for users and administrators.
+
+Allows users to sign up, log in, and manage their credentials.
+
+Admins have separate login credentials with elevated access to manage the system.
+
+### 👤 User
+Sample User for Testing:
+email: test123@gmail.com
+password: Test!123
+
+#### 📋 Reservation System
+Users can browse available rooms based on date and time.
+
+Allows users to book rooms for specified periods.
+
+Users can view, modify, or cancel their reservations.
+
+Displays room availability in real-time.
+
+#### 📝 Personalized Account Management
+Users can view and update their personal details.
+
+Tracks reservation history and upcoming bookings.
+
+Displays any warnings or restrictions on reservations if users exceed allowed bookings.
+
+### 👤 Admin 
+Sample Admin for Testing:
+email: admin@gmail.com
+password: Admin!123
+
+#### 📋 Reservation System of all Users
+Admins can view and manage reservations for all users.
+
+Admins can create or cancel bookings as necessary.
+
+Allows admins to monitor room usage and availability.
+
+#### 📝 General Account Management
+Admins can manage user accounts (e.g., activation, deactivation, or role assignment).
+
+Admins have the ability to reset passwords and resolve user issues.
+
+Provides an overview of user activity and account status.
+
+### 🌟 Additional Features
+
+#### 🌍 Global Reservation Viewing
+Allows users and admins to see the current (today and future dates) reservation slots.
