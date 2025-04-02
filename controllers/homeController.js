@@ -2,6 +2,8 @@ const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Reservation = require('../models/Reservation'); // Import Reservation model
 const bcrypt = require('bcrypt');
+const fs = require("fs");
+const path = require("path");
 const saltRounds = 10;
 
 // Home page (index.ejs) - Shows global reservations
@@ -81,6 +83,70 @@ exports.login_post = async (req, res) => {
     } catch (error) {
         console.error("❌ Login error:", error);
         return res.status(500).json({ error: "❌ Internal Server Error." });
+    }
+};
+
+// About Page
+exports.about_page = async (req, res) => {
+    try {
+        const packagePath = path.join(__dirname, "../package.json");
+
+        // Read package.json file
+        fs.readFile(packagePath, "utf8", async (err, data) => {
+            if (err) {
+                console.error("❌ Error reading package.json:", err);
+                return res.render("about", { 
+                    title: "About", 
+                    dependencies: null, 
+                    error: "Failed to load dependencies.", 
+                    user: null, 
+                    admin: null 
+                });
+            }
+
+            try {
+                // Parse dependencies
+                const packageJson = JSON.parse(data);
+                const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
+
+                // Fetch user/admin info if logged in
+                let user = null;
+                let admin = null;
+                
+                if (req.session.userId) {
+                    user = await User.findById(req.session.userId).lean();
+                } else if (req.session.adminId) {
+                    admin = await Admin.findById(req.session.adminId).lean();
+                }
+
+                res.render("about", { 
+                    title: "About", 
+                    dependencies, 
+                    error: null, 
+                    user, 
+                    admin 
+                });
+            } catch (parseError) {
+                console.error("❌ Error parsing package.json:", parseError);
+                res.render("about", { 
+                    title: "About", 
+                    dependencies: null, 
+                    error: "Failed to parse dependencies.", 
+                    user: null, 
+                    admin: null 
+                });
+            }
+        });
+
+    } catch (error) {
+        console.error("❌ About Page Error:", error);
+        res.render("about", { 
+            title: "About", 
+            dependencies: null, 
+            error: "Internal Server Error.", 
+            user: null, 
+            admin: null 
+        });
     }
 };
 

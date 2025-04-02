@@ -17,4 +17,7 @@ router.post('/login', homeController.login_post);
 // Register user (register.ejs)
 router.post('/register', homeController.register_post);
 
+// About Page Route
+router.get("/about", homeController.about_page);
+
 module.exports = router;

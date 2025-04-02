@@ -9,8 +9,9 @@
             <% if (user) { %>
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="/user">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/profile/<%= user._id %>">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/user/profile/<%= user._id %>">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="/">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li> <!-- Added About Page -->
                 </ul>
                 <span class="navbar-text text-white">
                     Welcome, <%= user.firstName %> <%= user.lastName %>!
@@ -20,6 +21,7 @@
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
                     <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li> <!-- Added About Page -->
                 </ul>
             <% } %>
         </div>
