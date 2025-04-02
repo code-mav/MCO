@@ -50,8 +50,12 @@
       <br>
 
       <!-- DELETE ACCOUNT FORM -->
-      <form action="/user/edit/<%= user._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
-        <button type="submit" class="btn btn-outline-danger">Delete Account</button>
+      <form action="/user/edit/<%= user._id %>?_method=DELETE" method="POST">
+        <button type="submit" 
+                class="btn btn-danger btn-sm" 
+                onclick="return confirm('Are you sure you want to delete this account?')">
+                Delete Account
+        </button>
       </form>
     <% } else { %>
       <p>No user data available.</p>
