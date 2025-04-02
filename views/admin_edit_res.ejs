@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include("./partials/admin_head.ejs") %>
+<body>
+    <%- include("./partials/admin_nav.ejs") %>
+
+    <!-- Admin Edit Reservation Section -->
+    <section id="editReservation" class="container admin-section">
+        <h1>Edit a Reservation</h1>
+        <hr>
+        <div class="add-res-date">
+            <label for="datePicker"><strong>Select Date:</strong></label>
+            <input type="date" id="datePicker" class="form-control" name="date" value="<%= selectedDate %>">
+        </div>
+        <!-- Global Reservations Section -->
+        <div class="global-reservations">
+            <h3>Current Reservations</h3>
+            <% if (reservations.length > 0) { %>
+                <table class="table table-secondary table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Room</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Reserved By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reservations.forEach(reservation => { %>
+                            <tr>
+                                <td><%= reservation.room %></td>
+                                <td><%= reservation.date %></td>
+                                <td><%= reservation.time %></td>
+                                <td><%= reservation.userName %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No active reservations at the moment.</p>
+            <% } %>
+        </div>
+        <form id="reservationForm">
+            <input type="hidden" id="selectedDate" name="date" value="<%= selectedDate %>">
+            <div class="info">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">First Name</span>
+                    <input type="text" class="form-control" id="firstNameSelect" name="firstName" value="<%= user.firstName %>" required>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Last Name</span>
+                    <input type="text" class="form-control" id="lastNameSelect" name="lastName" value="<%= user.lastName %>" required>
+                </div>
+                <div class="selects">
+                    <label for="location">Location:</label>
+                    <select class="form-select form-select-sm" id="locationSelect" name="location" required>
+                        <option selected>Any Floor</option>
+                        <option value="1st Floor">1st Floor</option>
+                        <option value="2nd Floor">2nd Floor</option>
+                        <option value="3rd Floor">3rd Floor</option>
+                    </select>
+            
+                    <label for="room">Room:</label>
+                    <select class="form-select form-select-sm" id="roomSelect" name="room" required>
+                        <option selected>Any Room</option>
+                        <option value="Room 1A">Room 1A</option>
+                        <option value="Room 1B">Room 1B</option>
+                        <option value="Room 2A">Room 2A</option>
+                        <option value="Room 2B">Room 2B</option>
+                        <option value="Room 3A">Room 3A</option>
+                        <option value="Room 3B">Room 3B</option>
+                    </select>
+                    <label for="time">Time:</label>
+                    <select class="form-select form-select-sm" id="timeSelect" name="time" required>
+                        <option selected>Any Time</option>
+                        <option value="07:00-08:00">07:00-08:00</option>
+                        <option value="08:00-09:00">08:00-09:00</option>
+                        <option value="09:00-10:00">09:00-10:00</option>
+                        <option value="10:00-11:00">10:00-11:00</option>
+                        <option value="11:00-12:00">11:00-12:00</option>
+                        <option value="12:00-13:00">12:00-13:00</option>
+                        <option value="13:00-14:00">13:00-14:00</option>
+                        <option value="14:00-15:00">14:00-15:00</option>
+                        <option value="15:00-16:00">15:00-16:00</option>
+                        <option value="16:00-17:00">16:00-17:00</option>
+                        <option value="17:00-18:00">17:00-18:00</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="confirmCheck" required>
+                <label class="form-check-label" for="confirmCheck">
+                    Yes, all information is correct.
+                </label>
+            </div>
+            <a class="btn btn-outline-secondary" href="/admin/admin_view_res">Cancel</a>
+            <button type="submit" class="btn btn-success">Save Reservation</button>
+        </form>
+    </section>
+    
+    <script>
+        document.getElementById("datePicker").addEventListener("change", function () {
+            document.getElementById("selectedDate").value = this.value;
+        });
+
+        // Prevent past date selection
+        document.getElementById("datePicker").setAttribute("min", new Date().toISOString().split("T")[0]);
+
+        document.getElementById("datePicker").addEventListener("change", function () {
+            document.getElementById("selectedDate").value = this.value;
+            fetchUnavailableTimes();
+        });
+
+        document.getElementById("roomSelect").addEventListener("change", fetchUnavailableTimes);
+
+        async function fetchUnavailableTimes() {
+            const date = document.getElementById("datePicker").value;
+            const room = document.getElementById("roomSelect").value;
+            if (!date || !room) return;
+
+            try {
+                const response = await fetch(`/api/unavailable-times?date=${date}&room=${room}`);
+                const unavailableTimes = await response.json();
+
+                const timeSelect = document.getElementById("timeSelect");
+                [...timeSelect.options].forEach(option => {
+                    option.disabled = unavailableTimes.includes(option.value);
+                });
+            } catch (error) {
+                console.error("Error fetching unavailable times:", error);
+            }
+        }
+
+        // AJAX submission for reservations (prevents page reload)
+        document.getElementById("reservationForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch("/admin/admin_edit_res/<%= reservation._id %>?_method=PUT", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(result.success); // Show success message
+                    window.location.href = `/admin/admin_view_res?date=${data.date}`; // Redirect to view reservations
+                } else {
+                    alert(result.error); // Show error message
+                    document.getElementById("reservationForm").reset(); // Reset the form
+                }
+
+            } catch (error) {
+                console.error("❌ Error submitting reservation:", error);
+                alert("❌ Something went wrong. Please try again.");
+            }
+        });
+
+        fetchUnavailableTimes();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

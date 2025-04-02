@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include("./partials/admin_head.ejs") %>
+<body>
+    <%- include("./partials/admin_nav.ejs") %>
+
+
+    <!-- Admin View Reservation Section -->
+    <section id="viewReservation" class="container admin-section">
+        <h1>View Reservation</h1>
+        <hr>
+        
+        <!-- Date Picker -->
+        <div class="date">
+            <label for="datePicker"><strong>Select Date:</strong></label>
+            <input type="date" id="datePicker" class="form-control" value="<%= selectedDate %>" onchange="updateReservations()">
+        </div>
+
+        <!-- Display Selected Date -->
+        <h3>Selected Date: <span id="displayDate"><%= displayDate %></span></h3>
+
+        <table class="table table-secondary table-striped table-bordered border-success-subtle" id="reservationsTable">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Room</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (reservations.length > 0) { %>
+                    <% reservations.forEach((res, index) => { %>
+                        <tr>
+                            <th scope="row"><%= index + 1 %></th>
+                            <td><%= res.userName %></td>
+                            <td><%= res.location %></td>
+                            <td><%= res.room %></td>
+                            <td><%= res.time %></td>
+                            <td>
+                                <form action="/admin/delete_reservation/<%= res._id %>?_method=DELETE" method="POST">
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                                <form action="/admin/admin_edit_res/<%= res._id %>" method="GET">
+                                    <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="text-center">No reservations for this date.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+        <a class="btn btn-outline-secondary" href="/admin">Back</a>
+        <a class="btn btn-outline-success" href="/admin/admin_add_res">Add a Reservation</a>
+    </section>
+    
+    <script>
+        function updateReservations() {
+            let selectedDate = document.getElementById('datePicker').value;
+            if (selectedDate) {
+                window.location.href = `/admin/admin_view_res?date=${selectedDate}`;
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

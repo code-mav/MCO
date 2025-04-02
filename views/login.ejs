@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("./partials/home_head.ejs") %>
+<body>
+  <%- include("./partials/home_nav.ejs") %>
+
+  <!-- Login Section -->
+  <section id="login" class="container form-section mt-4">
+    <h2>Login</h2>
+    <hr>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+      </div>
+      <div class="login-btn">
+        <button type="submit" class="btn btn-outline-success">Login</button>
+      </div>
+    </form>
+    <br>
+    <a class="registration" href="/register">Don't have an account? Register here.</a>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/script.js"></script>
+
+  <script>
+      document.getElementById("loginForm").addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const data = Object.fromEntries(formData.entries());
+
+          try {
+              const response = await fetch("/login", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(data),
+              });
+
+              const result = await response.json();
+
+              if (result.error) {
+                  alert(result.error); 
+              } else {
+                  alert(result.success); 
+                  window.location.href = result.redirect; 
+              }
+          } catch (error) {
+              console.error("Error:", error);
+              alert("❌ Login failed. Please try again.");
+          }
+      });
+  </script>
+</body>
+</html>
