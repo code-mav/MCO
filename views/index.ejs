@@ -44,14 +44,18 @@
             <% } %>
         </div>
 
-        <% if (!user) { %>
+        <% if (!user && !admin) { %>
         <div class="log-reg-prompt text-center mt-4">
             <p>Already have an account? <a href="/login">Login</a> here to reserve a discussion room.</p>
             <p>Don't have an account yet? <a href="/register">Register</a> here to reserve a discussion room.</p>
         </div>
-        <% } else { %>
+        <% } else if (user) { %>
         <div class="text-center mt-4">
             <p>You are logged in as <strong><%= user.firstName %> <%= user.lastName %></strong>. Proceed to your <a href="/user">Dashboard</a>.</p>
+        </div>
+        <% } else if (admin) { %>
+        <div class="text-center mt-4">
+            <p>You are logged in as <strong><%= admin.firstName %> <%= admin.lastName %></strong>. Proceed to your <a href="/admin">Dashboard</a>.</p>
         </div>
         <% } %>
     </section>

@@ -6,35 +6,39 @@ const fs = require("fs");
 const path = require("path");
 const saltRounds = 10;
 
-// Home page (index.ejs) - Shows global reservations
+// Home
 exports.home_index = async (req, res) => {
     try {
-        // Fetch all reservations (sorted by date and time)
+        // Fetch all reservations
         const reservations = await Reservation.find().sort({ date: 1, time: 1 }).lean();
 
-        // If user is logged in, fetch user data
+        // Check if user or admin is logged in
         let user = null;
+        let admin = null;
         if (req.session.userId) {
             user = await User.findById(req.session.userId).lean();
         }
+        if (req.session.adminId) {
+            admin = await Admin.findById(req.session.adminId).lean();
+        }
 
-        res.render('index', { title: 'Home', user, reservations });
+        res.render('index', { title: 'Home', user, admin, reservations });
     } catch (error) {
         console.error("❌ Error fetching reservations:", error);
-        res.render('index', { title: 'Home', user: null, reservations: [] });
+        res.render('index', { title: 'Home', user: null, admin: null, reservations: [] });
     }
 };
 
 // Login page
 exports.login = (req, res) => {
     if (req.session.userId) return res.redirect('/user');
-    res.render('login', { title: 'Login', user: null });
+    res.render('login', { title: 'Login', user: null, admin: null });
 };
 
 // Register page
 exports.register_get = (req, res) => {
     if (req.session.userId) return res.redirect('/user');
-    res.render('register', { title: 'Register', user: null });
+    res.render('register', { title: 'Register', user: null, admin: null });
 };
 
 // Login user (AJAX)
