@@ -16,33 +16,31 @@
         <hr>
 
         <!-- Global Reservations Section -->
-        <div class="global-reservations">
-            <h3>Current Reservations</h3>
-            <% if (reservations.length > 0) { %>
-                <table class="table table-secondary table-striped table-bordered">
-                    <thead>
+    <div class="global-reservations">
+        <h3>Current Reservations</h3>
+        <% if (reservations.length > 0) { %>
+            <table class="table table-secondary table-striped table-bordered">
+                <thead>
+                 <tr>
+                     <th>Room</th>
+                     <th>Date</th>
+                     <th>Time</th>
+                   </tr>
+                </thead>
+                <tbody>
+                    <% reservations.forEach(reservation => { %>
                         <tr>
-                            <th>Room</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Reserved By</th>
+                            <td><%= reservation.room %></td>
+                            <td><%= reservation.date %></td>
+                            <td><%= reservation.time %></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <% reservations.forEach(reservation => { %>
-                            <tr>
-                                <td><%= reservation.room %></td>
-                                <td><%= reservation.date %></td>
-                                <td><%= reservation.time %></td>
-                                <td><%= reservation.userName %></td>
-                            </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            <% } else { %>
-                <p>No active reservations at the moment.</p>
-            <% } %>
-        </div>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No active reservations at the moment.</p>
+        <% } %>
+    </div>
 
         <% if (!user && !admin) { %>
         <div class="log-reg-prompt text-center mt-4">
